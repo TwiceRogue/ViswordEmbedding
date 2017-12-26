@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScatterPlot</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
+    <script type="text/javascript" src="../d3_v3/d3.js"></script>
+    <script type="text/javascript" src="../d3_v3/d3.layout.cloud.js"></script>
+
+    <link  rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link  rel="stylesheet" type="text/css" href="/css/example-fluid-layout.css">-->
+
+
+</head>
+<style>
+    .tooltip{
+        position: absolute;
+        width: auto;
+        height: auto;
+        font-family: Helvetica;
+
+        background-color: gainsboro;
+        border-radius: 5px;
+
+
+    }
+    .input-group{
+        margin-left: 40px;
+    }
+    .selection{
+        width:120px;
+    }
+    #sg0{
+        margin-left: 20px;
+
+    }
+    #sg1{
+        margin-left: 0px;
+    }
+    .x_axis_bar text{
+        font-size: 0px;
+    }
+    .x_axis_bar path,
+    .x_axis_bar line {
+        fill: none;
+    }
+    .y_axis_bar path,
+    .y_axis_bar line{
+        fill:none;
+    }
+
+</style>
+<body>
+
+<div class="row">
+
+
+        <!--<span>-->
+            <!--<img src="//www.visualcinnamon.com/wp-content/uploads/2015/03/VisualCinnamonLogo50.png" alt="Visual Cinnamon" title="Visual Cinnamon" scale="0">-->
+        <!--</span>-->
+
+
+    <!--<span class="ish-ph-wp_tagline"><span>VISUAL CINNAMON</span></span>-->
+
+        <nav class="nav navbar-default" role="navigation">
+            <div class="container">
+
+                <div class="navbar-header">
+                        <span>
+                            <img src="./img/logo-50.png" alt="Visual Sky" title="Visual Sky" >
+                        </span>
+                    <a class="navbar-brand" href="#">
+                        VISUAL SKY
+                    </a>
+
+                </div>
+            <ul id="mainnav" class="nav navbar-nav">
+            <li id="menu-item-about" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-about"><a href="#">About-</a></li>
+            <li id="menu-item-contact" class="menu-it em menu-item-type-post_type menu-item-object-page menu-item-contact"><a href="#">Contact</a></li>
+            <li id="menu-item-work" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-work"><a href="#">Work</a></li>
+            <li id="menu-item-blog" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-blog"><a href="#">Blog</a></li>
+            <li id="menu-item-prints" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-prints"><a href="#">Prints</a></li>
+            <li id="menu-item-extra" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-extra"><a href="#">Extra</a></li>
+            </ul>
+
+            </div>
+        </nav>
+
+    </div>
+
+<div class="row">
+<div class="col-sm-6 column text-center">
+<div class="form-group">
+<div class="combobox-container">
+    <div class="input-group">
+        <input type="Text"  placeholder="Search word..." class="input-large" id="searchbox" >
+        <button class="btn-default" data-dropdown="dropdown" onclick="SearchEvent();">Go
+        </button>
+    </div>
+
+</div>
+    <!--<select id="searchBox" class="combobox input-large form-control" style="display: none;" onchange="searchEvent(this.value)">-->
+        <!--<option value="" selected="">Search name...</option>-->
+    <!--</select>-->
+</div>
+</div>
+    <div class="column col-lg-offset-6">
+        <div class="list-group">
+            <select class="selection" id="mySelect" onchange="ChangeData(this.options[this.options.selectedIndex].value)">
+                <option>Foods</option>
+                <option>Adverbs</option>
+                <option>Cities</option>
+                <option>Animals</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+    <div class="row">
+        <!--<div class="col-lg-2 column"></div>-->
+    <div class="col-lg-5 column" id="sg0"></div>
+    <div class="col-lg-5 column" id="sg1"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 column fluid" id="barchart"></div>
+    </div>
+
+
+
+
+
+
+    <!--<div class="btn-group">-->
+        <!--<button onclick="ScatterPlotChart()" class="btn-default">-->
+            <!--Plot-->
+        <!--</button>-->
+        <!--<button onclick="ScatterPlotChart().Render()" class="btn-default">-->
+            <!--Render-->
+        <!--</button>-->
+
+    <!--</div>>--09-->
+</body>
+
+<script type="text/javascript" src="./js/scatterplot.js"></script>
+<script type="text/javascript" >
+    var obj =document.getElementById('mySelect');
+    var index=obj.selectedIndex;
+    var val = obj.options[index].value;
+    var filename_sg0 ="de_wiki_en_sample_1w2w_sg0_food.csv";
+    var filename_sg1 ="de_wiki_en_sample_1w2w_sg1_food.csv";
+    console.log(typeof (val));
+    var _chart =  ScatterPlotChart("#sg0",filename_sg0);
+    _chart.render();
+    var _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+    //_chart2.render();
+    function ChangeData(val) {
+        console.log(val);
+        if(val == 'Foods'){
+            $("#sg0").empty();
+            $("#sg1").empty();
+            filename_sg0="de_wiki_en_sample_1w2w_sg0_food.csv";
+            filename_sg1="de_wiki_en_sample_1w2w_sg1_food.csv";
+
+            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart.render();
+            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+           // _chart2.render();
+            $("#barchart").empty();
+            Bar("variance_food_sg0.csv");
+        }
+        else if(val == "Adverbs"){
+            //d3.select("#sg0").empty();
+            //d3.select("#sg1").empty();
+            $("#sg0").empty();
+            $("#sg1").empty();
+            filename_sg0="de_wiki_en_1w2w_500_s0.csv";
+            filename_sg1="de_wiki_en_1w2w_500_s1.csv";
+
+            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart.render();
+            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+            //_chart2.render();
+            $("#barchart").empty();
+            Bar("variance.csv");
+
+    }
+    else if(val=="Cities"){
+            $("#sg0").empty();
+            $("#sg1").empty();
+            filename_sg0="de_wiki_en_sample_1w2w_sg0_cities.csv";
+            filename_sg1="de_wiki_en_sample_1w2w_sg1_cities.csv";
+
+            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart.render();
+            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+            //_chart2.render();
+            $("#barchart").empty();
+            Bar("variance_cities_sg0.csv");
+        }
+        else if(val=="Animals"){
+            $("#sg0").empty();
+            $("#sg1").empty();
+            filename_sg0="de_wiki_en_sample_1w2w_sg0_wordnet_animal.csv";
+            filename_sg1="de_wiki_en_sample_1w2w_sg1_wordnet_animal.csv";
+
+            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart.render();
+            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+            //_chart2.render();
+            $("#barchart").empty();
+            Bar("variance_cities_sg0.csv");
+        }
+
+
+
+    }</script>
+</html>
