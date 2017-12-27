@@ -1,7 +1,7 @@
 
         xMark=[];
 
-        function ScatterPlotChart(element,filename) {
+        function ScatterPlotChart(element,filename0,filename1) {
             var xScale;
             var yScale;
             var minx=0,maxx=0,miny=0,maxy=0;
@@ -15,9 +15,17 @@
             _svg,
             bodyG;
             var dist = new Array();
-            function readData(_svg,filename) {
+            var a = d3.rgb(255,185,15);
+            var b = d3.rgb(152,245,255);
+            var color = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]
 
-                d3.csv(filename,function (error,csvdata) {
+            var compute = d3.interpolate(b,a);
+            var min_dis=100;
+            var max_dis=0;
+            var quantize = d3.scale.quantize();
+            function readData(_svg,filename0,filename1) {
+
+                d3.csv(filename0,function (error,csvdata) {
                     if(error){
                         console.log(error);
 
@@ -47,13 +55,20 @@
                     renderAxes(_svg);
 
                     defineBodyClip(_svg);
-                    d3.csv("de_wiki_en_sample_1w2w_sg1_food.csv",function (e,csvdata_1) {
+                    d3.csv(filename1,function (e,csvdata_1) {
                             var dst = new Array();
 
                             //console.log(dst);
                             for(var s=0; s<rawdata.length;s++){
                                 dist[rawdata[s].w]= Math.abs(csvdata_1[s].x*csvdata_1[s].x+csvdata_1[s].y*csvdata_1[s].y-rawdata[s].x*rawdata[s].x-rawdata[s].y-rawdata[s].y);
+                                if(min_dis>dist[rawdata[s].w]){
+                                    min_dis=dist[rawdata[s].w];
+                                }
+                                if (max_dis<dist[rawdata[s].w]){
+                                    max_dis=dist[rawdata[s].w];
+                                }
                             }
+
                         renderBody(_svg);
                         }
 
@@ -78,7 +93,7 @@
                     .attr("height", height)
                     .attr("width", width);
 
-                readData(_svg,filename);
+                readData(_svg,filename0,filename1);
             };
          function renderAxes(svg) {
             var axesG = svg.append("g")
@@ -146,6 +161,11 @@
                 .attr("height", quadrantHeight());
     }
     function renderBody(svg) {
+        console.log("dis");
+        console.log(min_dis);
+        console.log(max_dis);
+     quantize.domain([min_dis,max_dis])
+            .range(color);
         if (!bodyG) {
             bodyG = svg.append("g")
                     .attr("class", "body")
@@ -155,6 +175,7 @@
                     .attr("clip-path", "url(#body-clip)");
         }
         renderSymbols();
+        renderLegend();
 //         d3.csv("relabel_real4_0.3.csv",function (error,community) {
 //             if(error){
 //                 console.log(error);
@@ -183,6 +204,30 @@
 
         }
 
+        function renderLegend(){
+                var legend = _svg.selectAll(".legend")
+                    .data([0].concat(quantize.range()), function(d) { return d; })
+                    .enter()
+                    .append("g")
+                    .attr("class", "legend")
+                    .attr("transform", function(d, i) {
+                        var legendX = i * 16 + width-200;   //set position for each legend element
+                        var legendY = height - 40;
+                        return "translate(" + legendX + ", " + legendY + ")";
+                    });
+
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 1)
+                    .attr("width", 16)
+                    .attr("height", 8)
+                    .style("fill", function (d,i) {
+                        return color[i];
+                    });
+
+            //legend.exit().remove();
+
+            }
     function renderSymbols() { // <-B
 
 
@@ -191,20 +236,14 @@
         //console.log(rawdata[0]);
         //console.log(xMark);
         rawdata.forEach(function (list) {
-            var a = d3.rgb(255,185,15);
-            var b = d3.rgb(152,245,255);
 
-            var compute = d3.interpolate(b,a);
-            var linear = d3.scale.linear()
-                .domain([0,70])
-                .range([0,1]);
             var circle = bodyG.selectAll("circle")
                 .data(rawdata)
                 .enter()
                 .append("circle")
                 .attr("fill", function (d) {
                     console.log(dist[d.w]);
-                    return compute(linear(dist[d.w]));
+                    return quantize(dist[d.w]);
                 })
                 .attr("stroke", "gray")
                 .attr("cx", function (d) {
@@ -269,13 +308,24 @@
             .style("opacity", 1.0);
             });
             Circle.on("mouseleave",function (d) {
-                //d3.select("body").selectAll("."+d.w).attr("fill","lightblue");
+                d3.select("body").selectAll("."+d.w).attr("fill",function (d) {
+                console.log(dist[d.w]);
+                return quantize(dist[d.w]);
+            });
                 d3.selectAll("circle").attr("opacity",1);
                 tooltip.style("opacity",0.0);
             });
 
-
-
+            function showwords() {
+                //var htmls =  $("#ShowWords").html();
+                var htmls = "";
+                for(var i=0;i<rawdata.length;i++){
+                    var names = rawdata[i].w;
+                     htmls += '<li>'+'<button onclick=\"SearchEventbyName(this)\"  class=\" listbutton\" id=\"'+rawdata[i].w+'\">'+rawdata[i].w+'</button>'+'</li>';
+                }
+                $("#ShowWords").html(htmls);
+            }
+            showwords();
 
 
       //  };
@@ -411,12 +461,35 @@
         function  SearchEvent() {
             //name = d3.select("#searchbox").value;
             var name = document.getElementById("searchbox").value;
-            console.log(name);
+            if (document.getElementById("searchbox").value==""){
+                name = d3.select(this).value;
+            }
+            console.log(d3.select(this).value);
             if (name!=""){
-                d3.select("body").selectAll("."+name).attr("fill","red");
+                d3.selectAll("circle")
+                    .attr("opacity",0.3);
+                d3.select("body")
+                    .selectAll("."+name)
+                    .attr("fill","red")
+                    .attr("opacity",1);
+                //d3.select("body").selectAll("."+name).attr("fill","red");
             }
         }
-        
+        function  SearchEventbyName(obj) {
+            var name = obj.id;
+
+            console.log(obj.id);
+
+            if (name!=""){
+                d3.selectAll("circle")
+                    .attr("opacity",0.3);
+                d3.select("body")
+                    .selectAll("."+name)
+                    .attr("fill","red")
+                    .attr("opacity",1);
+                //d3.select("body").selectAll("."+name).attr("fill","red");
+            }
+        }
         
         function ParallelOrdinates(element,filename){
             var m = [30, 10, 10, 10],

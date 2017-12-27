@@ -50,6 +50,12 @@
     .y_axis_bar line{
         fill:none;
     }
+    ul{
+      list-style: none;
+    }
+    .listbutton{
+        border: none;
+    }
 
 </style>
 <body>
@@ -64,8 +70,8 @@
 
     <!--<span class="ish-ph-wp_tagline"><span>VISUAL CINNAMON</span></span>-->
 
-        <nav class="nav navbar-default" role="navigation">
-            <div class="container">
+        <nav class="nav navbar-default" role="navigation" >
+            <div class="container"style="float: left;">
 
                 <div class="navbar-header">
                         <span>
@@ -77,7 +83,7 @@
 
                 </div>
             <ul id="mainnav" class="nav navbar-nav">
-            <li id="menu-item-about" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-about"><a href="#">About-</a></li>
+            <li id="menu-item-about" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-about"><a href="#">About</a></li>
             <li id="menu-item-contact" class="menu-it em menu-item-type-post_type menu-item-object-page menu-item-contact"><a href="#">Contact</a></li>
             <li id="menu-item-work" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-work"><a href="#">Work</a></li>
             <li id="menu-item-blog" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-blog"><a href="#">Blog</a></li>
@@ -94,10 +100,9 @@
 <div class="col-sm-6 column text-center">
 <div class="form-group">
 <div class="combobox-container">
-    <div class="input-group">
-        <input type="Text"  placeholder="Search word..." class="input-large" id="searchbox" >
-        <button class="btn-default" data-dropdown="dropdown" onclick="SearchEvent();">Go
-        </button>
+    <div class="input-group" style="text-align: center;position: relative;left: 450px" >
+        <input type="Text"  placeholder="Search word..." class="input-large" id="searchbox"  style="text-align: center;" >
+        <button class="btn-default" data-dropdown="dropdown" onclick="SearchEvent();">Go</button>
     </div>
 
 </div>
@@ -119,9 +124,28 @@
 </div>
 
     <div class="row">
-        <!--<div class="col-lg-2 column"></div>-->
-    <div class="col-lg-5 column" id="sg0"></div>
-    <div class="col-lg-5 column" id="sg1"></div>
+        <div class="col-lg-2 column" id="list">
+            <table border="0" width="400px" >
+                <tr>
+                    <td align="center"><button onclick="ChooseFoods()" id="Choose Foods">Foods</button></td>
+                    <td align="center"><button onclick="ChooseAdverbs()" id="Choose Adverbs">Adverbs</button></td>
+                    <td align="center"><button onclick="ChooseCities()" id="Choose Cities">Cities</button></td>
+                    <td align="center"><button onclick="ChooseAnimals()" id="Choose Animals">Animals</button></td>
+                </tr>
+            </table>
+            <div style="overflow: auto;height: 850px" >
+                <ul id="ShowWords" style="text-align: center;">
+                <!--<li style="text-align: center"><button onclick="ChooseFoods()">Foods</button></li>-->
+                <!--<li style="text-align: center"><button onclick="ChooseAdverbs()">Adverbs</button></li>-->
+                <!--<li style="text-align: center"><button onclick="ChooseCities()">Cities</button></li>-->
+                <!--<li style="text-align: center"><button onclick="ChooseAnimals()">Animals</button></li>-->
+
+            </ul>
+            </div>
+
+        </div>
+        <div class="col-lg-5 column" id="sg0"></div>
+    <!--<div class="col-lg-5 column" id="sg1"></div>-->
     </div>
 
     <div class="row">
@@ -152,9 +176,9 @@
     var filename_sg0 ="de_wiki_en_sample_1w2w_sg0_food.csv";
     var filename_sg1 ="de_wiki_en_sample_1w2w_sg1_food.csv";
     console.log(typeof (val));
-    var _chart =  ScatterPlotChart("#sg0",filename_sg0);
+    var _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
     _chart.render();
-    var _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+    //var _chart2 = ScatterPlotChart("#sg1",filename_sg1);
     //_chart2.render();
     function ChangeData(val) {
         console.log(val);
@@ -164,9 +188,9 @@
             filename_sg0="de_wiki_en_sample_1w2w_sg0_food.csv";
             filename_sg1="de_wiki_en_sample_1w2w_sg1_food.csv";
 
-            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
             _chart.render();
-            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+            //_chart2 = ScatterPlotChart("#sg1",filename_sg1);
            // _chart2.render();
             $("#barchart").empty();
             Bar("variance_food_sg0.csv");
@@ -179,9 +203,9 @@
             filename_sg0="de_wiki_en_1w2w_500_s0.csv";
             filename_sg1="de_wiki_en_1w2w_500_s1.csv";
 
-            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
             _chart.render();
-            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+           // _chart2 = ScatterPlotChart("#sg1",filename_sg1);
             //_chart2.render();
             $("#barchart").empty();
             Bar("variance.csv");
@@ -193,9 +217,9 @@
             filename_sg0="de_wiki_en_sample_1w2w_sg0_cities.csv";
             filename_sg1="de_wiki_en_sample_1w2w_sg1_cities.csv";
 
-            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
             _chart.render();
-            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+            //_chart2 = ScatterPlotChart("#sg1",filename_sg1);
             //_chart2.render();
             $("#barchart").empty();
             Bar("variance_cities_sg0.csv");
@@ -206,9 +230,9 @@
             filename_sg0="de_wiki_en_sample_1w2w_sg0_wordnet_animal.csv";
             filename_sg1="de_wiki_en_sample_1w2w_sg1_wordnet_animal.csv";
 
-            _chart =  ScatterPlotChart("#sg0",filename_sg0);
+            _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
             _chart.render();
-            _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+            //_chart2 = ScatterPlotChart("#sg1",filename_sg1);
             //_chart2.render();
             $("#barchart").empty();
             Bar("variance_cities_sg0.csv");
@@ -216,5 +240,54 @@
 
 
 
-    }</script>
+    }
+    function ChooseFoods() {
+        $("#sg0").empty();
+        $("#sg1").empty();
+        filename_sg0="de_wiki_en_sample_1w2w_sg0_food.csv";
+        filename_sg1="de_wiki_en_sample_1w2w_sg1_food.csv";
+
+        _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
+        _chart.render();
+    }
+    function ChooseAdverbs() {
+        $("#sg0").empty();
+        $("#sg1").empty();
+        filename_sg0="de_wiki_en_1w2w_500_s0.csv";
+        filename_sg1="de_wiki_en_1w2w_500_s1.csv";
+
+        _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
+        _chart.render();
+        // _chart2 = ScatterPlotChart("#sg1",filename_sg1);
+        //_chart2.render();
+        $("#barchart").empty();
+        Bar("variance.csv");
+    }
+    function ChooseCities() {
+        $("#sg0").empty();
+        $("#sg1").empty();
+        filename_sg0="de_wiki_en_sample_1w2w_sg0_cities.csv";
+        filename_sg1="de_wiki_en_sample_1w2w_sg1_cities.csv";
+
+        _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
+        _chart.render();
+        //_chart2 = ScatterPlotChart("#sg1",filename_sg1);
+        //_chart2.render();
+        $("#barchart").empty();
+        Bar("variance_cities_sg0.csv");
+    }
+    function ChooseAnimals() {
+        $("#sg0").empty();
+        $("#sg1").empty();
+        filename_sg0="de_wiki_en_sample_1w2w_sg0_wordnet_animal.csv";
+        filename_sg1="de_wiki_en_sample_1w2w_sg1_wordnet_animal.csv";
+
+        _chart =  ScatterPlotChart("#sg0",filename_sg0,filename_sg1);
+        _chart.render();
+        //_chart2 = ScatterPlotChart("#sg1",filename_sg1);
+        //_chart2.render();
+        $("#barchart").empty();
+        Bar("variance_cities_sg0.csv");
+    }
+</script>
 </html>
